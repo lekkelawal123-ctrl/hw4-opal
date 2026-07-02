@@ -1,0 +1,349 @@
+<!--
+Program name: homework4.html
+Author: Mohammed Lawal
+Date created: 06/16/2026
+Version: 4.0
+Description: Opal Medical HW4 - Adds Fetch API, iFrame, fixed header/footer,
+             cookies (remember user), and local storage (save form data).
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Opal Medical | Patient Registration</title>
+  <link href="style4.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- ==================== FIXED HEADER ==================== -->
+<div id="banner">
+  <div id="logo">
+    <svg width="50" height="50" viewBox="0 0 70 70" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="35" cy="35" r="33" fill="#7b5ea7" stroke="#ffffff" stroke-width="2"/>
+      <rect x="30" y="16" width="10" height="38" rx="3" fill="#ffffff"/>
+      <rect x="16" y="30" width="38" height="10" rx="3" fill="#ffffff"/>
+    </svg>
+  </div>
+  <div id="banner-title">
+    <h1>Opal Medical</h1>
+    <p id="tagline">Compassionate Care, Every Step of the Way</p>
+  </div>
+  <div id="banner-right">
+    <p id="today"></p>
+    <p id="welcome-msg" style="font-weight:bold; color:#ffe082; margin-top:4px;"></p>
+    <div id="not-me-section" style="display:none; margin-top:4px;">
+      <label style="font-size:0.82em; color:#fff; cursor:pointer;">
+        <input type="checkbox" id="not-me-checkbox" onchange="startAsNewUser()">
+        <span id="not-me-label"></span>
+      </label>
+    </div>
+  </div>
+</div>
+<!-- ==================== END FIXED HEADER ==================== -->
+
+<!-- ==================== PAGE BODY ==================== -->
+<div id="page-body">
+
+  <div id="main-content">
+
+    <div id="form-header">
+      <h2>New Patient Registration</h2>
+      <p>Please complete all required fields marked with <span class="required-star">*</span>. Your information is protected and kept confidential.</p>
+    </div>
+
+    <!-- ==================== iFRAME SECTION ==================== -->
+    <div class="form-section">
+      <div class="section-title">
+        <span class="section-icon">🌐</span> Patient Resources
+      </div>
+      <div style="padding: 12px;">
+        <p style="font-size:0.88em; color:#555; margin-bottom:8px;">Learn more about our services and patient rights:</p>
+        <iframe
+          src="https://www.cdc.gov/patients/index.html"
+          width="100%"
+          height="250"
+          title="CDC Patient Resources"
+          style="border: 1px solid #ddd; border-radius:6px;">
+          Your browser does not support iFrames.
+        </iframe>
+      </div>
+    </div>
+    <!-- ==================== END iFRAME ==================== -->
+
+    <form id="reg-form" action="thankyou.html">
+
+      <!-- ---- PERSONAL INFORMATION ---- -->
+      <div class="form-section">
+        <div class="section-title"><span class="section-icon">👤</span> Personal Information</div>
+        <table>
+          <tr>
+            <td class="label-cell"><label for="fname">First Name <span class="required-star">*</span></label></td>
+            <td>
+              <input type="text" id="fname" name="fname" maxlength="30" placeholder="First name" required
+                pattern="[A-Za-z'\-]{1,30}"
+                title="First name: 1–30 characters. Letters, apostrophes, and dashes only.">
+              <span id="fname-err" class="err-msg"></span>
+            </td>
+            <td class="label-cell"><label for="mi">M.I.</label></td>
+            <td>
+              <input type="text" id="mi" name="mi" maxlength="1" class="small-input" placeholder="A"
+                title="Middle initial: one letter only (optional).">
+              <span id="mi-err" class="err-msg"></span>
+            </td>
+            <td class="label-cell"><label for="lname">Last Name <span class="required-star">*</span></label></td>
+            <td>
+              <input type="text" id="lname" name="lname" maxlength="30" placeholder="Last name" required
+                pattern="[A-Za-z'\-]{1,30}"
+                title="Last name: 1–30 characters. Letters, apostrophes, and dashes only.">
+              <span id="lname-err" class="err-msg"></span>
+            </td>
+          </tr>
+          <tr>
+            <td class="label-cell"><label for="dob">Date of Birth <span class="required-star">*</span></label></td>
+            <td>
+              <input type="date" id="dob" name="dob" required
+                title="Date of birth: must not be in the future or more than 120 years ago.">
+              <span id="dob-err" class="err-msg"></span>
+            </td>
+            <td class="label-cell"><label for="ssn">SSN / Patient ID</label></td>
+            <td colspan="3">
+              <input type="password" id="ssn" name="ssn" maxlength="11" placeholder="XXX-XX-XXXX"
+                title="9-digit Social Security Number. Auto-formats as XXX-XX-XXXX. Obscured for security.">
+              <span id="ssn-err" class="err-msg"></span>
+            </td>
+          </tr>
+          <tr>
+            <td class="label-cell"><label for="phone">Phone Number</label></td>
+            <td>
+              <input type="tel" id="phone" name="phone" placeholder="000-000-0000" maxlength="12"
+                pattern="\d{3}-\d{3}-\d{4}"
+                title="Phone number in format 000-000-0000.">
+              <span id="phone-err" class="err-msg"></span>
+            </td>
+            <td class="label-cell"><label for="email">Email Address <span class="required-star">*</span></label></td>
+            <td colspan="3">
+              <input type="email" id="email" name="email" placeholder="name@domain.com" required
+                title="Email in format name@domain.com. Will be converted to lowercase.">
+              <span id="email-err" class="err-msg"></span>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- ---- ADDRESS ---- -->
+      <div class="form-section">
+        <div class="section-title"><span class="section-icon">📍</span> Address</div>
+        <table>
+          <tr>
+            <td class="label-cell"><label for="addr1">Address Line 1 <span class="required-star">*</span></label></td>
+            <td colspan="3">
+              <input type="text" id="addr1" name="addr1" maxlength="30" placeholder="Street address" required minlength="2"
+                title="Street address: 2–30 characters required.">
+              <span id="addr1-err" class="err-msg"></span>
+            </td>
+          </tr>
+          <tr>
+            <td class="label-cell"><label for="addr2">Address Line 2</label></td>
+            <td colspan="3">
+              <input type="text" id="addr2" name="addr2" maxlength="30" placeholder="Apt, Suite, Floor (optional)"
+                title="Optional. If entered, must be 2–30 characters.">
+              <span id="addr2-err" class="err-msg"></span>
+            </td>
+          </tr>
+          <tr>
+            <td class="label-cell"><label for="city">City <span class="required-star">*</span></label></td>
+            <td>
+              <input type="text" id="city" name="city" maxlength="30" placeholder="City" required minlength="2"
+                title="City name: 2–30 characters required.">
+              <span id="city-err" class="err-msg"></span>
+            </td>
+            <td class="label-cell"><label for="state">State <span class="required-star">*</span></label></td>
+            <td>
+              <!-- Populated via Fetch API from states.html -->
+              <select id="state" name="state" required title="Select your state or territory.">
+                <option value="">Loading states...</option>
+              </select>
+              <span id="state-err" class="err-msg"></span>
+            </td>
+          </tr>
+          <tr>
+            <td class="label-cell"><label for="zip">Zip Code <span class="required-star">*</span></label></td>
+            <td>
+              <input type="text" id="zip" name="zip" maxlength="5" placeholder="77204" required
+                pattern="\d{5}"
+                title="Zip code: exactly 5 digits. Auto-truncated to 5 digits.">
+              <span id="zip-err" class="err-msg"></span>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- ---- DEMOGRAPHICS ---- -->
+      <div class="form-section">
+        <div class="section-title"><span class="section-icon">📋</span> Demographics</div>
+        <table>
+          <tr>
+            <td class="label-cell"><label>Gender <span class="required-star">*</span></label></td>
+            <td colspan="3">
+              <input type="radio" id="male" name="gender" value="Male" required title="Select your gender.">
+              <label for="male">Male</label>&nbsp;&nbsp;
+              <input type="radio" id="female" name="gender" value="Female" title="Select your gender.">
+              <label for="female">Female</label>&nbsp;&nbsp;
+              <input type="radio" id="other-gender" name="gender" value="Prefer not to say" title="Select your gender.">
+              <label for="other-gender">Prefer not to say</label>
+            </td>
+          </tr>
+          <tr>
+            <td class="label-cell"><label>Vaccinated?</label></td>
+            <td colspan="3">
+              <input type="radio" id="vax-yes" name="vaccinated" value="Yes" title="Have you received vaccinations?">
+              <label for="vax-yes">Yes</label>&nbsp;&nbsp;
+              <input type="radio" id="vax-no" name="vaccinated" value="No" title="Have you received vaccinations?">
+              <label for="vax-no">No</label>
+            </td>
+          </tr>
+          <tr>
+            <td class="label-cell"><label>Have Insurance?</label></td>
+            <td colspan="3">
+              <input type="radio" id="ins-yes" name="insurance" value="Yes" title="Do you have health insurance?">
+              <label for="ins-yes">Yes</label>&nbsp;&nbsp;
+              <input type="radio" id="ins-no" name="insurance" value="No" title="Do you have health insurance?">
+              <label for="ins-no">No</label>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- ---- MEDICAL HISTORY ---- -->
+      <div class="form-section">
+        <div class="section-title"><span class="section-icon">🏥</span> Medical History</div>
+        <table>
+          <tr>
+            <td class="label-cell" valign="top"><label>Have you had any of the following?</label></td>
+            <td colspan="3">
+              <!-- Populated via Fetch API from conditions.html -->
+              <div class="checkbox-group" id="conditions-group">
+                <span style="color:#999; font-size:0.85em;">Loading...</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="label-cell"><label for="health">Health Score</label></td>
+            <td colspan="3">
+              <div class="slider-container">
+                <span class="slider-label">1 (Poor)</span>
+                <input type="range" id="health" name="health" min="1" max="10" value="5"
+                  oninput="updateSlider(this.value)"
+                  title="Rate your current health. 1 = Poor, 10 = Excellent.">
+                <span class="slider-label">10 (Excellent)</span>
+                <span id="health-val" class="slider-value">5</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="label-cell" valign="top"><label for="symptoms">Current Symptoms</label></td>
+            <td colspan="3">
+              <textarea id="symptoms" name="symptoms" rows="3" cols="50"
+                placeholder="Describe your current symptoms..."
+                title="Optional. Describe any current symptoms."></textarea>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- ---- ACCOUNT SETUP ---- -->
+      <div class="form-section">
+        <div class="section-title"><span class="section-icon">🔐</span> Account Setup</div>
+        <table>
+          <tr>
+            <td class="label-cell"><label for="userid">Desired User ID <span class="required-star">*</span></label></td>
+            <td>
+              <input type="text" id="userid" name="userid" maxlength="20" placeholder="e.g. jsmith2026" required
+                title="5–20 characters. Starts with a letter. Letters, numbers, dashes, underscores only. Auto-lowercased.">
+              <span id="userid-err" class="err-msg"></span>
+            </td>
+            <td colspan="2"><small>5–20 chars. No spaces. Starts with a letter.</small></td>
+          </tr>
+          <tr>
+            <td class="label-cell"><label for="password">Password <span class="required-star">*</span></label></td>
+            <td>
+              <input type="password" id="password" name="password" maxlength="30" placeholder="Create a password" required
+                title="8–30 characters. Must include uppercase, lowercase, number, and special character. No double quotes.">
+              <span id="password-err" class="err-msg"></span>
+            </td>
+          </tr>
+          <tr>
+            <td class="label-cell"><label for="confirm-pwd">Confirm Password <span class="required-star">*</span></label></td>
+            <td>
+              <input type="password" id="confirm-pwd" name="confirm-pwd" maxlength="30" placeholder="Re-enter password" required
+                title="Re-enter your password exactly as typed above.">
+              <span id="confirm-pwd-err" class="err-msg"></span>
+            </td>
+          </tr>
+          <tr>
+            <td class="label-cell"><label for="remember-me">Remember Me</label></td>
+            <td>
+              <input type="checkbox" id="remember-me" name="remember-me" checked
+                title="Check to save your info for next time. Uncheck to clear all saved data.">
+              <label for="remember-me" style="font-size:0.88em;">Save my info for next visit (48 hours)</label>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- ---- BUTTONS ---- -->
+      <div id="form-buttons">
+        <input type="reset" value="CLEAR AND START OVER" class="btn-reset">
+        <button type="button" class="btn-review" onclick="showReview()">REVIEW</button>
+        <button type="button" class="btn-validate" onclick="validateAll()">VALIDATE</button>
+        <input type="submit" id="btn-submit" value="Submit Registration" class="btn-submit" style="display:none;">
+      </div>
+
+    </form>
+
+    <!-- ==================== REVIEW PANEL ==================== -->
+    <div id="review-panel" style="display:none;"></div>
+    <!-- ==================== END REVIEW PANEL ==================== -->
+
+  </div>
+</div>
+<!-- ==================== END PAGE BODY ==================== -->
+
+<!-- ==================== FIXED FOOTER ==================== -->
+<div id="footer">
+  <div id="footer-left">
+    <p><strong>Opal Medical</strong> | PO Box 77204, Houston, TX 77204</p>
+  </div>
+  <div id="footer-center">
+    <button class="contact-btn" onclick="alert('Contact us at info@opalmedical.com\nPhone: (713) 555-0100')">📧 Contact Us</button>
+  </div>
+  <div id="footer-right">
+    <a href="https://www.facebook.com" target="_blank">Facebook</a> |
+    <a href="https://www.twitter.com" target="_blank">Twitter</a> |
+    <a href="https://www.instagram.com" target="_blank">Instagram</a>
+  </div>
+</div>
+<!-- ==================== END FIXED FOOTER ==================== -->
+
+<script>
+  // Display today's date
+  const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  const months = ["January","February","March","April","May","June",
+                  "July","August","September","October","November","December"];
+  const now = new Date();
+  const date = now.getDate();
+  const v = date % 100;
+  const suffix = (v>=11&&v<=13)?"th":(v%10===1)?"st":(v%10===2)?"nd":(v%10===3)?"rd":"th";
+  document.getElementById("today").innerHTML =
+    days[now.getDay()] + ", " + months[now.getMonth()] + " " + date + suffix + " " + now.getFullYear();
+</script>
+<script src="form4.js"></script>
+
+<!--
+End of homework4.html
+Author: Mohammed Lawal
+Version: 4.0
+-->
+</body>
+</html>
